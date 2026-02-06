@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLG LTV:CAC Summary | Owner.com</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #FF6B35; --dark: #1A1A2E; --gray-900: #111827; --gray-700: #374151; --gray-500: #6B7280; --gray-300: #D1D5DB; --gray-100: #F3F4F6; --gray-50: #F9FAFB; --white: #FFFFFF; --marketing-bg: #EFF6FF; --marketing-text: #1D4ED8; --marketing-light: #DBEAFE; --marketing-accent: #3B82F6; --projection-bg: #FFF7ED; --projection-border: #FDBA74; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); line-height: 1.5; }
+        .container { max-width: 2400px; margin: 0 auto; padding: 32px 24px; }
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--gray-300); }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; }
+        .logo-text { font-size: 24px; font-weight: 700; color: var(--dark); }
+        .logo-text span { color: var(--primary); }
+        h1 { font-size: 28px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+        .subtitle { color: var(--gray-500); font-size: 14px; }
+        .toggle-controls { background: var(--white); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 48px; flex-wrap: wrap; }
+        .toggle-group { display: flex; flex-direction: column; gap: 12px; }
+        .toggle-group-title { font-weight: 600; font-size: 14px; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.5px; }
+        .toggle-group-title.marketing-title { color: var(--marketing-text); }
+        .toggle-options { display: flex; gap: 12px; flex-wrap: wrap; }
+        .toggle-option { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 16px; border-radius: 8px; border: 2px solid var(--gray-300); background: var(--white); transition: all 0.2s ease; }
+        .toggle-option:hover { border-color: var(--primary); background: #FFF7ED; }
+        .toggle-option.active { border-color: var(--primary); background: #FFF7ED; }
+        .toggle-option input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+        .toggle-option label { font-size: 14px; font-weight: 500; color: var(--gray-700); cursor: pointer; white-space: nowrap; }
+        /* Marketing toggle options - blue styling */
+        .toggle-option.marketing-toggle:hover { border-color: var(--marketing-accent); background: var(--marketing-bg); }
+        .toggle-option.marketing-toggle.active { border-color: var(--marketing-accent); background: var(--marketing-bg); }
+        .toggle-option.marketing-toggle input[type="checkbox"] { accent-color: var(--marketing-accent); }
+        .toggle-option.marketing-toggle label { color: var(--marketing-text); }
+        
+        .legend { display: flex; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--gray-700); }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+        .legend-dot.finance { background: var(--gray-100); border: 1px solid var(--gray-300); }
+        .legend-dot.marketing { background: var(--marketing-bg); border: 1px solid var(--marketing-accent); }
+        .legend-dot.projection { background: var(--projection-bg); border: 1px solid var(--projection-border); }
+        .section { background: var(--white); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; overflow: hidden; }
+        .section.hidden { display: none; }
+        .section-header { background: var(--dark); color: var(--white); padding: 16px 20px; font-weight: 600; font-size: 15px; display: flex; flex-direction: column; gap: 6px; }
+        .section-header .header-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .section-header .header-line { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+        .section-header .icon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+        .section-header .icon-finance { background: var(--primary); }
+        .section-header .icon-marketing { background: var(--marketing-accent); }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 12px 14px; text-align: right; white-space: nowrap; }
+        th { background: var(--gray-100); font-weight: 600; color: var(--gray-700); border-bottom: 2px solid var(--gray-300); position: sticky; top: 0; }
+        th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--white); z-index: 1; min-width: 220px; font-weight: 500; }
+        th:first-child { background: var(--gray-100); z-index: 2; }
+        tr:hover td { background: #EEF2FF; }
+        tr:hover td:first-child { background: #EEF2FF; }
+        .metric-label { color: var(--gray-900); }
+        .metric-total { font-weight: 600; color: var(--dark); }
+        .highlight-row td { background: #F0FDF4 !important; font-weight: 600; }
+        .highlight-row td:first-child { background: #F0FDF4 !important; }
+        
+        /* Projection columns */
+        td.projection { background: var(--projection-bg) !important; }
+        tr:hover td.projection { background: #FEF3C7 !important; }
+        th.projection { background: #FED7AA !important; }
+        .divider-col { border-left: 3px solid var(--primary) !important; }
+        
+        /* Expandable rows */
+        .expandable-row { cursor: pointer; }
+        .expandable-row:hover td { background: #E0E7FF !important; }
+        .expandable-row td:first-child { font-weight: 600; }
+        .expand-icon { display: inline-block; width: 16px; transition: transform 0.2s ease; color: var(--primary); font-size: 10px; }
+        .expand-icon.expanded { transform: rotate(90deg); }
+        .detail-row td { background: #F8FAFC !important; }
+        .detail-row:hover td { background: #EEF2FF !important; }
+        .detail-row td:first-child { background: #F8FAFC !important; }
+        .detail-row:hover td:first-child { background: #EEF2FF !important; }
+        .detail-indent { padding-left: 32px !important; color: var(--gray-500); font-weight: 400 !important; }
+        .detail-indent-2 { padding-left: 48px !important; color: var(--gray-400); font-weight: 400 !important; font-size: 12px; }
+        .detail-row.hidden { display: none; }
+        
+        /* Marketing rows - blue background only */
+        .marketing-row td { background: var(--marketing-bg) !important; }
+        .marketing-row td:first-child { background: var(--marketing-bg) !important; color: var(--marketing-text); font-weight: 500; }
+        .marketing-row:hover td { background: var(--marketing-light) !important; }
+        .marketing-row:hover td:first-child { background: var(--marketing-light) !important; }
+        .marketing-row.expandable-row:hover td { background: #BFDBFE !important; }
+        .marketing-row.expandable-row:hover td:first-child { background: #BFDBFE !important; }
+        .marketing-row .expand-icon { color: var(--marketing-text); }
+        .marketing-detail td { background: #F0F9FF !important; }
+        .marketing-detail td:first-child { background: #F0F9FF !important; }
+        .marketing-detail:hover td { background: #E0F2FE !important; }
+        .marketing-detail:hover td:first-child { background: #E0F2FE !important; }
+        .marketing-detail .detail-indent { color: #60A5FA; }
+        /* Marketing row projections */
+        .marketing-row td.projection { background: #DBEAFE !important; }
+        .marketing-row:hover td.projection { background: #BFDBFE !important; }
+        .marketing-detail td.projection { background: #E0F2FE !important; }
+        .marketing-detail:hover td.projection { background: #BFDBFE !important; }
+        
+        /* Hidden marketing rows based on product toggle */
+        .marketing-product-row.hidden { display: none; }
+        
+        /* eGPV toggle - green styling */
+        .toggle-option.egpv-toggle:hover { border-color: #059669; background: #ECFDF5; }
+        .toggle-option.egpv-toggle.active { border-color: #059669; background: #ECFDF5; }
+        .toggle-option.egpv-toggle input[type="checkbox"] { accent-color: #059669; }
+        .toggle-option.egpv-toggle label { color: #047857; }
+        .toggle-group-title.egpv-title { color: #047857; }
+        .egpv-active td[data-metric="arpa"] { background: #ECFDF5 !important; }
+        .egpv-active td[data-metric="ltv"] { background: #D1FAE5 !important; }
+        .egpv-active td[data-metric="ltvcac"] { background: #D1FAE5 !important; }
+        
+        /* Model Section Styles */
+        .model-container { padding: 32px; }
+        .model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1200px; margin: 0 auto; }
+        .model-column { background: var(--gray-50); border-radius: 12px; padding: 24px; }
+        .model-section-title { font-size: 16px; font-weight: 700; color: var(--dark); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gray-300); }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 6px; }
+        .input-wrapper { display: flex; align-items: center; background: var(--white); border: 2px solid var(--gray-300); border-radius: 8px; padding: 8px 12px; transition: border-color 0.2s; }
+        .input-wrapper:focus-within { border-color: var(--primary); }
+        .input-wrapper input { flex: 1; border: none; outline: none; font-size: 16px; font-weight: 600; color: var(--dark); background: transparent; width: 100%; }
+        .input-prefix, .input-suffix { font-size: 14px; color: var(--gray-500); font-weight: 500; }
+        .input-prefix { margin-right: 4px; }
+        .input-suffix { margin-left: 4px; }
+        .input-ref { font-size: 11px; color: var(--gray-400); margin-top: 4px; font-style: italic; }
+        .input-divider { height: 1px; background: var(--gray-300); margin: 20px 0; }
+        .target-input .input-wrapper { border-color: var(--primary); background: #FFF7ED; }
+        .target-input label { color: var(--primary); font-weight: 600; }
+        
+        .output-card { background: var(--white); border-radius: 8px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--gray-200); }
+        .output-card.primary { border: 2px solid var(--primary); background: #FFF7ED; }
+        .output-card.highlight-grader { border: 2px solid var(--marketing-accent); background: var(--marketing-bg); }
+        .output-card.highlight-wi { border: 2px solid #8B5CF6; background: #F5F3FF; }
+        .output-label { font-size: 12px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .output-value { font-size: 28px; font-weight: 700; color: var(--dark); }
+        .output-value.large { font-size: 36px; }
+        .output-formula { font-size: 11px; color: var(--gray-400); margin-top: 6px; font-style: italic; }
+        .output-divider { height: 2px; background: var(--gray-200); margin: 20px 0; }
+        
+        .comparison-section { background: var(--white); border-radius: 8px; padding: 16px; border: 1px solid var(--gray-200); }
+        .comparison-section h4 { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 12px; }
+        .comparison-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
+        .comparison-row:last-child { border-bottom: none; }
+        .comparison-current { font-weight: 600; color: var(--gray-500); }
+        .comparison-arrow { color: var(--gray-400); }
+        .comparison-target { font-weight: 700; color: var(--dark); }
+        .comparison-delta { font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .comparison-delta.negative { background: #FEE2E2; color: #DC2626; }
+        .comparison-delta.positive { background: #D1FAE5; color: #059669; }
+        
+        @media (max-width: 900px) { .model-grid { grid-template-columns: 1fr; } }
+        
+        footer { text-align: center; padding: 24px; color: var(--gray-500); font-size: 12px; }
+        @media (max-width: 768px) { .container { padding: 16px; } header { flex-direction: column; align-items: flex-start; gap: 16px; } h1 { font-size: 22px; } .toggle-controls { flex-direction: column; gap: 24px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><div class="logo-icon">O</div><div class="logo-text">Owner<span>.com</span></div></div>
+            <div style="text-align: right;"><h1>PLG LTV:CAC Summary</h1><p class="subtitle">2025 Actuals & 2026 Forecast</p></div>
+        </header>
+
+        <div class="toggle-controls">
+            <div class="toggle-group">
+                <div class="toggle-group-title">Tab</div>
+                <div class="toggle-options">
+                    <div class="toggle-option active" onclick="switchTab('build')"><input type="radio" name="tab" id="tab-build" checked><label for="tab-build">Historical & Forecast</label></div>
+                    <div class="toggle-option" onclick="switchTab('model')"><input type="radio" name="tab" id="tab-model"><label for="tab-model">Sales-Purchase Hurdle</label></div>
+                    <div class="toggle-option" onclick="switchTab('dq')"><input type="radio" name="tab" id="tab-dq"><label for="tab-dq">DQ Monetization</label></div>
+                </div>
+            </div>
+            <div class="toggle-group" id="finance-toggles">
+                <div class="toggle-group-title">Finance View</div>
+                <div class="toggle-options">
+                    <div class="toggle-option" onclick="toggleCheckbox('plg-paid')"><input type="checkbox" id="plg-paid" onclick="event.stopPropagation(); updateVisibility();"><label for="plg-paid" onclick="event.preventDefault();">Paid PLG</label></div>
+                    <div class="toggle-option" onclick="toggleCheckbox('plg-organic')"><input type="checkbox" id="plg-organic" onclick="event.stopPropagation(); updateVisibility();"><label for="plg-organic" onclick="event.preventDefault();">Organic PLG</label></div>
+                    <div class="toggle-option active" onclick="toggleCheckbox('plg-combined')"><input type="checkbox" id="plg-combined" checked onclick="event.stopPropagation(); updateVisibility();"><label for="plg-combined" onclick="event.preventDefault();">Paid + Organic PLG</label></div>
+                </div>
+            </div>
+            <div class="toggle-group" id="marketing-toggles">
+                <div class="toggle-group-title marketing-title">Marketing View</div>
+                <div class="toggle-options">
+                    <div class="toggle-option marketing-toggle active" onclick="toggleCheckbox('product-grader')"><input type="checkbox" id="product-grader" checked onclick="event.stopPropagation(); updateVisibility();"><label for="product-grader" onclick="event.preventDefault();">Grader</label></div>
+                    <div class="toggle-option marketing-toggle active" onclick="toggleCheckbox('product-wi')"><input type="checkbox" id="product-wi" checked onclick="event.stopPropagation(); updateVisibility();"><label for="product-wi" onclick="event.preventDefault();">Website Improver</label></div>
+                    <div class="toggle-option marketing-toggle" onclick="toggleCheckbox('product-combined')"><input type="checkbox" id="product-combined" onclick="event.stopPropagation(); updateVisibility();"><label for="product-combined" onclick="event.preventDefault();">Grader + WI</label></div>
+                </div>
+            </div>
+            <div class="toggle-group" id="egpv-toggles">
+                <div class="toggle-group-title egpv-title">eGPV Filter</div>
+                <div class="toggle-options">
+                    <div class="toggle-option egpv-toggle" onclick="toggleCheckbox('egpv-3k')"><input type="checkbox" id="egpv-3k" onclick="event.stopPropagation(); applyEgpvFilter();"><label for="egpv-3k" onclick="event.preventDefault();">≥$3K eGPV Only</label></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot finance"></div><span>Finance Metrics</span></div>
+            <div class="legend-item"><div class="legend-dot marketing"></div><span>Marketing Metrics</span></div>
+            <div class="legend-item"><div class="legend-dot projection"></div><span>2026 Forecast</span></div>
+        </div>
+
+        <!-- ==================== PAID + ORGANIC PLG (COMBINED) ==================== -->
+        <div class="section" data-plg="combined">
+            <div class="section-header">
+                <div class="header-title">LTV:CAC Build</div>
+                <div class="header-line"><div class="icon icon-finance"></div><span id="title-combined-finance">Paid + Organic PLG</span></div>
+                <div class="header-line"><div class="icon icon-marketing"></div><span id="title-combined-marketing">Grader, Website Improver</span></div>
+            </div>
+            <div class="table-wrapper"><table><thead><tr>
+                <th>Metric</th>
+                <th>Jan-25</th><th>Feb-25</th><th>Mar-25</th><th>Apr-25</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Aug-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th>
+                <th class="projection divider-col">Jan-26</th><th class="projection">Feb-26</th><th class="projection">Mar-26</th><th class="projection">Apr-26</th><th class="projection">May-26</th><th class="projection">Jun-26</th><th class="projection">Jul-26</th><th class="projection">Aug-26</th><th class="projection">Sep-26</th><th class="projection">Oct-26</th><th class="projection">Nov-26</th><th class="projection">Dec-26</th>
+            </tr></thead><tbody>
+                <!-- Total Expense with nested details -->
+                <tr class="expandable-row" onclick="toggleExpand('combined-expense')"><td class="metric-label"><span class="expand-icon">▶</span> Total Expense</td>
+                    <td>$152,118</td><td>$266,772</td><td>$240,374</td><td>$287,511</td><td>$395,417</td><td>$371,363</td><td>$524,576</td><td>$578,899</td><td>$680,274</td><td>$842,930</td><td>$1,037,512</td><td>$1,487,356</td>
+                    <td class="projection divider-col">$1,497,054</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-expense"><td class="metric-label detail-indent">Paid Ads (Finance)</td>
+                    <td>$17,034</td><td>$19,476</td><td>$19,854</td><td>$28,274</td><td>$32,226</td><td>$43,856</td><td>$77,122</td><td>$131,406</td><td>$232,574</td><td>$370,868</td><td>$505,578</td><td>$774,654</td>
+                    <td class="projection divider-col">$659,880</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                
+                <!-- Marketing Spend - Grader -->
+                <tr class="detail-row marketing-row marketing-product-row hidden" data-parent="combined-expense" data-product="grader"><td class="metric-label detail-indent expandable-row" onclick="event.stopPropagation(); toggleExpand('combined-mktspend-grader')"><span class="expand-icon">▶</span> Paid Ads - Grader</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$232,573</td><td>$370,868</td><td>$414,064</td><td>$485,293</td>
+                    <td class="projection divider-col">$473,300</td><td class="projection">$467,050</td><td class="projection">$461,488</td><td class="projection">$466,238</td><td class="projection">$466,238</td><td class="projection">$466,238</td><td class="projection">$504,563</td><td class="projection">$504,563</td><td class="projection">$504,563</td><td class="projection">$504,563</td><td class="projection">$504,563</td><td class="projection">$504,563</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-grader"><td class="detail-indent-2">Meta</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$155,387</td><td>$188,705</td><td>$193,409</td><td>$250,000</td>
+                    <td class="projection divider-col">$312,500</td><td class="projection">$281,250</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td><td class="projection">$312,188</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-grader"><td class="detail-indent-2">Google</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$77,186</td><td>$164,313</td><td>$162,526</td><td>$150,000</td>
+                    <td class="projection divider-col">$100,000</td><td class="projection">$75,000</td><td class="projection">$83,250</td><td class="projection">$83,250</td><td class="projection">$83,250</td><td class="projection">$83,250</td><td class="projection">$91,575</td><td class="projection">$91,575</td><td class="projection">$91,575</td><td class="projection">$91,575</td><td class="projection">$91,575</td><td class="projection">$91,575</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-grader"><td class="detail-indent-2">TikTok</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$17,850</td><td>$58,129</td><td>$43,000</td>
+                    <td class="projection divider-col">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-grader"><td class="detail-indent-2">Direct Mail</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$42,293</td>
+                    <td class="projection divider-col">—</td><td class="projection">$50,000</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-grader"><td class="detail-indent-2">Other</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+                    <td class="projection divider-col">$35,000</td><td class="projection">$35,000</td><td class="projection">$40,250</td><td class="projection">$45,000</td><td class="projection">$45,000</td><td class="projection">$45,000</td><td class="projection">$75,000</td><td class="projection">$75,000</td><td class="projection">$75,000</td><td class="projection">$75,000</td><td class="projection">$75,000</td><td class="projection">$75,000</td>
+                </tr>
+                
+                <!-- Marketing Spend - Website Improver -->
+                <tr class="detail-row marketing-row marketing-product-row hidden" data-parent="combined-expense" data-product="wi"><td class="metric-label detail-indent expandable-row" onclick="event.stopPropagation(); toggleExpand('combined-mktspend-wi')"><span class="expand-icon">▶</span> Paid Ads - Website Improver</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$87,337</td><td>$213,000</td>
+                    <td class="projection divider-col">$209,800</td><td class="projection">$180,725</td><td class="projection">$202,005</td><td class="projection">$176,755</td><td class="projection">$176,755</td><td class="projection">$176,755</td><td class="projection">$227,196</td><td class="projection">$227,196</td><td class="projection">$227,196</td><td class="projection">$227,196</td><td class="projection">$227,196</td><td class="projection">$227,196</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-wi"><td class="detail-indent-2">Meta</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$73,310</td><td>$175,000</td>
+                    <td class="projection divider-col">$157,500</td><td class="projection">$141,750</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td><td class="projection">$157,343</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-wi"><td class="detail-indent-2">Google</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$14,027</td><td>$18,000</td>
+                    <td class="projection divider-col">$5,300</td><td class="projection">$3,975</td><td class="projection">$4,412</td><td class="projection">$4,412</td><td class="projection">$4,412</td><td class="projection">$4,412</td><td class="projection">$4,853</td><td class="projection">$4,853</td><td class="projection">$4,853</td><td class="projection">$4,853</td><td class="projection">$4,853</td><td class="projection">$4,853</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-wi"><td class="detail-indent-2">TikTok</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$20,000</td>
+                    <td class="projection divider-col">$12,000</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-wi"><td class="detail-indent-2">Other</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+                    <td class="projection divider-col">$35,000</td><td class="projection">$35,000</td><td class="projection">$40,250</td><td class="projection">$15,000</td><td class="projection">$15,000</td><td class="projection">$15,000</td><td class="projection">$65,000</td><td class="projection">$65,000</td><td class="projection">$65,000</td><td class="projection">$65,000</td><td class="projection">$65,000</td><td class="projection">$65,000</td>
+                </tr>
+                
+                <!-- Marketing Spend - Combined -->
+                <tr class="detail-row marketing-row marketing-product-row hidden" data-parent="combined-expense" data-product="product-combined"><td class="metric-label detail-indent expandable-row" onclick="event.stopPropagation(); toggleExpand('combined-mktspend-combined')"><span class="expand-icon">▶</span> Paid Ads - Grader + WI</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$232,573</td><td>$370,868</td><td>$501,401</td><td>$698,293</td>
+                    <td class="projection divider-col">$683,100</td><td class="projection">$647,775</td><td class="projection">$663,493</td><td class="projection">$642,993</td><td class="projection">$642,993</td><td class="projection">$642,993</td><td class="projection">$731,759</td><td class="projection">$731,759</td><td class="projection">$731,759</td><td class="projection">$731,759</td><td class="projection">$731,759</td><td class="projection">$731,759</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-combined"><td class="detail-indent-2">Meta</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$155,387</td><td>$188,705</td><td>$266,719</td><td>$425,000</td>
+                    <td class="projection divider-col">$470,000</td><td class="projection">$423,000</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td><td class="projection">$469,531</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-combined"><td class="detail-indent-2">Google</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$77,186</td><td>$164,313</td><td>$176,553</td><td>$168,000</td>
+                    <td class="projection divider-col">$105,300</td><td class="projection">$78,975</td><td class="projection">$87,662</td><td class="projection">$87,662</td><td class="projection">$87,662</td><td class="projection">$87,662</td><td class="projection">$96,428</td><td class="projection">$96,428</td><td class="projection">$96,428</td><td class="projection">$96,428</td><td class="projection">$96,428</td><td class="projection">$96,428</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-combined"><td class="detail-indent-2">TikTok</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$17,850</td><td>$58,129</td><td>$63,000</td>
+                    <td class="projection divider-col">$37,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td><td class="projection">$25,800</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-combined"><td class="detail-indent-2">Direct Mail</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$42,293</td>
+                    <td class="projection divider-col">—</td><td class="projection">$50,000</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row marketing-detail hidden" data-parent="combined-mktspend-combined"><td class="detail-indent-2">Other</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+                    <td class="projection divider-col">$70,000</td><td class="projection">$70,000</td><td class="projection">$80,500</td><td class="projection">$60,000</td><td class="projection">$60,000</td><td class="projection">$60,000</td><td class="projection">$140,000</td><td class="projection">$140,000</td><td class="projection">$140,000</td><td class="projection">$140,000</td><td class="projection">$140,000</td><td class="projection">$140,000</td>
+                </tr>
+                
+                <tr class="detail-row hidden" data-parent="combined-expense"><td class="metric-label detail-indent">Contractors</td>
+                    <td>$18,272</td><td>$32,446</td><td>$20,691</td><td>$41,593</td><td>$45,296</td><td>$44,155</td><td>$29,508</td><td>$43,589</td><td>$31,697</td><td>$106,938</td><td>$68,579</td><td>$91,315</td>
+                    <td class="projection divider-col">$92,590</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-expense"><td class="metric-label detail-indent">Payroll-Related</td>
+                    <td>$102,403</td><td>$192,425</td><td>$174,008</td><td>$189,403</td><td>$269,708</td><td>$250,298</td><td>$365,592</td><td>$336,179</td><td>$373,224</td><td>$328,585</td><td>$406,536</td><td>$562,110</td>
+                    <td class="projection divider-col">$646,015</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-expense"><td class="metric-label detail-indent">Overheads</td>
+                    <td>$14,408</td><td>$22,425</td><td>$25,820</td><td>$28,242</td><td>$48,189</td><td>$33,055</td><td>$52,355</td><td>$67,725</td><td>$42,780</td><td>$36,538</td><td>$56,819</td><td>$59,277</td>
+                    <td class="projection divider-col">$100,580</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                
+                <!-- Marketing: AQLs - Grader -->
+                <tr class="marketing-row marketing-product-row" data-product="grader"><td class="metric-label">AQLs - Grader</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1,438</td><td>1,790</td><td>1,609</td><td>1,402</td>
+                    <td class="projection divider-col">1,365</td><td class="projection">1,378</td><td class="projection">1,527</td><td class="projection">1,584</td><td class="projection">1,624</td><td class="projection">1,664</td><td class="projection">1,756</td><td class="projection">1,796</td><td class="projection">1,836</td><td class="projection">1,876</td><td class="projection">1,916</td><td class="projection">1,956</td>
+                </tr>
+                
+                <!-- Marketing: AQLs - Website Improver -->
+                <tr class="marketing-row marketing-product-row" data-product="wi"><td class="metric-label">AQLs - Website Improver</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>280</td><td>444</td>
+                    <td class="projection divider-col">429</td><td class="projection">401</td><td class="projection">457</td><td class="projection">425</td><td class="projection">425</td><td class="projection">425</td><td class="projection">488</td><td class="projection">488</td><td class="projection">488</td><td class="projection">488</td><td class="projection">488</td><td class="projection">488</td>
+                </tr>
+                
+                <!-- Marketing: AQLs - Combined -->
+                <tr class="marketing-row marketing-product-row hidden" data-product="product-combined"><td class="metric-label">AQLs - Grader + WI</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1,438</td><td>1,790</td><td>1,889</td><td>1,846</td>
+                    <td class="projection divider-col">1,794</td><td class="projection">1,779</td><td class="projection">1,984</td><td class="projection">2,009</td><td class="projection">2,049</td><td class="projection">2,089</td><td class="projection">2,244</td><td class="projection">2,284</td><td class="projection">2,324</td><td class="projection">2,364</td><td class="projection">2,404</td><td class="projection">2,444</td>
+                </tr>
+                
+                <!-- Marketing: CPAQL - Grader -->
+                <tr class="marketing-row marketing-product-row" data-product="grader"><td class="metric-label">CPAQL - Grader</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$162</td><td>$207</td><td>$257</td><td>$346</td>
+                    <td class="projection divider-col">$347</td><td class="projection">$339</td><td class="projection">$302</td><td class="projection">$294</td><td class="projection">$287</td><td class="projection">$280</td><td class="projection">$287</td><td class="projection">$281</td><td class="projection">$275</td><td class="projection">$269</td><td class="projection">$263</td><td class="projection">$258</td>
+                </tr>
+                
+                <!-- Marketing: CPAQL - Website Improver -->
+                <tr class="marketing-row marketing-product-row" data-product="wi"><td class="metric-label">CPAQL - Website Improver</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$312</td><td>$480</td>
+                    <td class="projection divider-col">$489</td><td class="projection">$451</td><td class="projection">$442</td><td class="projection">$416</td><td class="projection">$416</td><td class="projection">$416</td><td class="projection">$466</td><td class="projection">$466</td><td class="projection">$466</td><td class="projection">$466</td><td class="projection">$466</td><td class="projection">$466</td>
+                </tr>
+                
+                <!-- Marketing: CPAQL - Combined -->
+                <tr class="marketing-row marketing-product-row hidden" data-product="product-combined"><td class="metric-label">CPAQL - Grader + WI</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>$162</td><td>$207</td><td>$265</td><td>$378</td>
+                    <td class="projection divider-col">$381</td><td class="projection">$364</td><td class="projection">$334</td><td class="projection">$320</td><td class="projection">$314</td><td class="projection">$308</td><td class="projection">$326</td><td class="projection">$320</td><td class="projection">$315</td><td class="projection">$310</td><td class="projection">$304</td><td class="projection">$299</td>
+                </tr>
+                
+                <!-- Marketing: AQL:CW - Grader -->
+                <tr class="marketing-row marketing-product-row" data-product="grader"><td class="metric-label">AQL:CW - Grader</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10.0%</td><td>8.5%</td><td>6.9%</td><td>6.0%</td>
+                    <td class="projection divider-col">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td><td class="projection">6.0%</td>
+                </tr>
+                
+                <!-- Marketing: AQL:CW - Website Improver -->
+                <tr class="marketing-row marketing-product-row" data-product="wi"><td class="metric-label">AQL:CW - Website Improver</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>12.2%</td><td>11.5%</td>
+                    <td class="projection divider-col">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td><td class="projection">11.5%</td>
+                </tr>
+                
+                <!-- Marketing: AQL:CW - Combined -->
+                <tr class="marketing-row marketing-product-row hidden" data-product="product-combined"><td class="metric-label">AQL:CW - Grader + WI</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10.0%</td><td>8.5%</td><td>8.1%</td><td>7.3%</td>
+                    <td class="projection divider-col">7.3%</td><td class="projection">7.2%</td><td class="projection">7.3%</td><td class="projection">7.2%</td><td class="projection">7.1%</td><td class="projection">7.1%</td><td class="projection">7.2%</td><td class="projection">7.2%</td><td class="projection">7.2%</td><td class="projection">7.1%</td><td class="projection">7.1%</td><td class="projection">7.1%</td>
+                </tr>
+                
+                <!-- CW -->
+                <tr><td class="metric-label">CW</td>
+                    <td>37</td><td>68</td><td>67</td><td>80</td><td>106</td><td>103</td><td>152</td><td>132</td><td>144</td><td>153</td><td>153</td><td>270</td>
+                    <td class="projection divider-col">274</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                
+                <!-- Activations -->
+                <tr><td class="metric-label">Activations</td>
+                    <td>35</td><td>61</td><td>57</td><td>69</td><td>98</td><td>88</td><td>140</td><td>116</td><td>130</td><td>134</td><td>136</td><td>239</td>
+                    <td class="projection divider-col">235</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                
+                <!-- CAC with Unit CAC breakdown -->
+                <tr class="highlight-row expandable-row" onclick="toggleExpand('combined-unitcac')"><td class="metric-total"><span class="expand-icon">▶</span> CAC</td>
+                    <td>$4,298</td><td>$4,348</td><td>$4,199</td><td>$4,142</td><td>$4,037</td><td>$4,212</td><td>$3,753</td><td>$5,010</td><td>$5,236</td><td>$6,296</td><td>$7,612</td><td>$6,232</td>
+                    <td class="projection divider-col">$6,379</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-unitcac"><td class="metric-label detail-indent">Paid Ads</td>
+                    <td>$487</td><td>$319</td><td>$348</td><td>$410</td><td>$329</td><td>$498</td><td>$551</td><td>$1,133</td><td>$1,789</td><td>$2,768</td><td>$3,718</td><td>$3,241</td>
+                    <td class="projection divider-col">$2,808</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-unitcac"><td class="metric-label detail-indent">Contractors</td>
+                    <td>$522</td><td>$532</td><td>$363</td><td>$603</td><td>$462</td><td>$502</td><td>$211</td><td>$376</td><td>$244</td><td>$798</td><td>$504</td><td>$382</td>
+                    <td class="projection divider-col">$394</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-unitcac"><td class="metric-label detail-indent">Payroll-Related</td>
+                    <td>$2,926</td><td>$3,155</td><td>$3,053</td><td>$2,745</td><td>$2,752</td><td>$2,844</td><td>$2,611</td><td>$2,898</td><td>$2,871</td><td>$2,452</td><td>$2,989</td><td>$2,352</td>
+                    <td class="projection divider-col">$2,749</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="detail-row hidden" data-parent="combined-unitcac"><td class="metric-label detail-indent">Overheads</td>
+                    <td>$412</td><td>$368</td><td>$453</td><td>$409</td><td>$492</td><td>$376</td><td>$374</td><td>$584</td><td>$329</td><td>$273</td><td>$418</td><td>$248</td>
+                    <td class="projection divider-col">$428</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                
+                <!-- LTV metrics -->
+                <tr data-row="arpa" data-plg-type="combined"><td class="metric-label">ARPA</td>
+                    <td>$566</td><td>$540</td><td>$592</td><td>$597</td><td>$609</td><td>$596</td><td>$598</td><td>$604</td><td>$621</td><td>$644</td><td>$645</td><td>$653</td>
+                    <td class="projection divider-col">$643</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr data-row="gm" data-plg-type="combined"><td class="metric-label">Gross Margin</td>
+                    <td>59%</td><td>47%</td><td>50%</td><td>48%</td><td>46%</td><td>47%</td><td>49%</td><td>53%</td><td>56%</td><td>55%</td><td>60%</td><td>57%</td>
+                    <td class="projection divider-col">58%</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr><td class="metric-label">Monthly Retention</td>
+                    <td>96%</td><td>96%</td><td>97%</td><td>96%</td><td>97%</td><td>97%</td><td>97%</td><td>96%</td><td>93%</td><td>96%</td><td>97%</td><td>96%</td>
+                    <td class="projection divider-col">96.73%</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr><td class="metric-label">Retention (Annualized)</td>
+                    <td>61%</td><td>61%</td><td>69%</td><td>61%</td><td>69%</td><td>69%</td><td>69%</td><td>61%</td><td>42%</td><td>61%</td><td>69%</td><td>61%</td>
+                    <td class="projection divider-col">67.1%</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="highlight-row"><td class="metric-total">LTV</td>
+                    <td>$9,330</td><td>$6,527</td><td>$9,933</td><td>$7,297</td><td>$9,601</td><td>$9,185</td><td>$9,074</td><td>$7,399</td><td>$5,261</td><td>$8,305</td><td>$11,698</td><td>$8,479</td>
+                    <td class="projection divider-col">$11,346</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+                <tr class="highlight-row"><td class="metric-total">LTV:CAC Ratio</td>
+                    <td>2.2x</td><td>1.5x</td><td>2.4x</td><td>1.8x</td><td>2.4x</td><td>2.2x</td><td>2.4x</td><td>1.5x</td><td>1.0x</td><td>1.3x</td><td>1.5x</td><td>1.4x</td>
+                    <td class="projection divider-col">1.8x</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td><td class="projection">—</td>
+                </tr>
+            </tbody></table></div>
+        </div>
+
+        <!-- ==================== PAID PLG ONLY ==================== -->
+        <div class="section hidden" data-plg="paid">
+            <div class="section-header">
+                <div class="header-title">LTV:CAC Build</div>
+                <div class="header-line"><div class="icon icon-finance"></div><span id="title-paid-finance">Paid PLG</span></div>
+                <div class="header-line"><div class="icon icon-marketing"></div><span id="title-paid-marketing">Grader, Website Improver</span></div>
+            </div>
+            <div class="table-wrapper"><table><thead><tr>
+                <th>Metric</th>
+                <th>Jan-25</th><th>Feb-25</th><th>Mar-25</th><th>Apr-25</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Aug-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th>
+            </tr></thead><tbody>
+                <tr class="expandable-row" onclick="toggleExpand('paid-expense')"><td class="metric-label"><span class="expand-icon">▶</span> Total Expense</td><td>$55,855</td><td>$112,548</td><td>$145,989</td><td>$126,650</td><td>$198,097</td><td>$215,346</td><td>$287,905</td><td>$331,694</td><td>$400,844</td><td>$436,823</td><td>$595,120</td><td>$813,850</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-expense"><td class="metric-label detail-indent">Paid Ads (Finance)</td><td>$8,517</td><td>$9,738</td><td>$9,927</td><td>$14,137</td><td>$16,113</td><td>$21,928</td><td>$38,561</td><td>$65,703</td><td>$116,287</td><td>$185,434</td><td>$252,789</td><td>$387,327</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-expense"><td class="metric-label detail-indent">Contractors</td><td>$4,605</td><td>$9,716</td><td>$9,619</td><td>$10,500</td><td>$15,704</td><td>$18,365</td><td>$15,137</td><td>$23,914</td><td>$20,137</td><td>$36,615</td><td>$35,247</td><td>$44,566</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-expense"><td class="metric-label detail-indent">Payroll-Related</td><td>$36,891</td><td>$82,871</td><td>$109,101</td><td>$87,539</td><td>$139,459</td><td>$153,552</td><td>$202,174</td><td>$197,440</td><td>$234,712</td><td>$190,654</td><td>$266,605</td><td>$342,000</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-expense"><td class="metric-label detail-indent">Overheads</td><td>$5,841</td><td>$10,223</td><td>$17,342</td><td>$14,474</td><td>$26,822</td><td>$21,502</td><td>$32,033</td><td>$44,637</td><td>$29,708</td><td>$24,120</td><td>$40,479</td><td>$39,957</td></tr>
+                <tr><td class="metric-label">CW</td><td>15</td><td>31</td><td>45</td><td>41</td><td>59</td><td>67</td><td>93</td><td>87</td><td>100</td><td>101</td><td>109</td><td>182</td></tr>
+                <tr><td class="metric-label">Activations</td><td>14</td><td>27</td><td>37</td><td>34</td><td>52</td><td>55</td><td>82</td><td>74</td><td>88</td><td>86</td><td>94</td><td>156</td></tr>
+                <tr class="highlight-row expandable-row" onclick="toggleExpand('paid-unitcac')"><td class="metric-total"><span class="expand-icon">▶</span> CAC</td><td>$4,106</td><td>$4,237</td><td>$3,923</td><td>$3,736</td><td>$3,786</td><td>$3,887</td><td>$3,490</td><td>$4,502</td><td>$4,571</td><td>$5,107</td><td>$6,298</td><td>$5,218</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-unitcac"><td class="metric-label detail-indent">Paid Ads</td><td>$608</td><td>$361</td><td>$268</td><td>$416</td><td>$310</td><td>$399</td><td>$470</td><td>$888</td><td>$1,321</td><td>$2,156</td><td>$2,689</td><td>$2,483</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-unitcac"><td class="metric-label detail-indent">Contractors</td><td>$329</td><td>$360</td><td>$260</td><td>$309</td><td>$302</td><td>$334</td><td>$185</td><td>$323</td><td>$229</td><td>$426</td><td>$375</td><td>$286</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-unitcac"><td class="metric-label detail-indent">Payroll-Related</td><td>$2,635</td><td>$3,069</td><td>$2,949</td><td>$2,575</td><td>$2,682</td><td>$2,792</td><td>$2,466</td><td>$2,668</td><td>$2,667</td><td>$2,217</td><td>$2,836</td><td>$2,192</td></tr>
+                <tr class="detail-row hidden" data-parent="paid-unitcac"><td class="metric-label detail-indent">Overheads</td><td>$417</td><td>$379</td><td>$469</td><td>$426</td><td>$516</td><td>$391</td><td>$391</td><td>$603</td><td>$337</td><td>$280</td><td>$431</td><td>$256</td></tr>
+                <tr><td class="metric-label">ARPA</td><td>$594</td><td>$533</td><td>$594</td><td>$531</td><td>$581</td><td>$567</td><td>$579</td><td>$584</td><td>$603</td><td>$624</td><td>$622</td><td>$632</td></tr>
+                <tr><td class="metric-label">Gross Margin</td><td>46%</td><td>50%</td><td>43%</td><td>43%</td><td>45%</td><td>48%</td><td>51%</td><td>54%</td><td>54%</td><td>59%</td><td>56%</td><td>—</td></tr>
+                <tr><td class="metric-label">Monthly Retention</td><td>96%</td><td>96%</td><td>97%</td><td>97%</td><td>97%</td><td>96%</td><td>98%</td><td>97%</td><td>93%</td><td>96%</td><td>96%</td><td>95%</td></tr>
+                <tr><td class="metric-label">Retention (Annualized)</td><td>59%</td><td>64%</td><td>69%</td><td>66%</td><td>72%</td><td>60%</td><td>76%</td><td>65%</td><td>43%</td><td>62%</td><td>61%</td><td>56%</td></tr>
+                <tr class="highlight-row"><td class="metric-total">LTV</td><td>$6,554</td><td>$9,808</td><td>$6,738</td><td>$9,144</td><td>$6,055</td><td>$11,827</td><td>$8,453</td><td>$4,909</td><td>$8,545</td><td>$8,988</td><td>$7,449</td><td>—</td></tr>
+                <tr class="highlight-row"><td class="metric-total">LTV:CAC Ratio</td><td>1.6x</td><td>2.3x</td><td>1.7x</td><td>2.4x</td><td>1.6x</td><td>3.0x</td><td>2.4x</td><td>1.1x</td><td>1.9x</td><td>1.8x</td><td>1.2x</td><td>—</td></tr>
+            </tbody></table></div>
+        </div>
+
+        <!-- ==================== ORGANIC PLG ONLY ==================== -->
+        <div class="section hidden" data-plg="organic">
+            <div class="section-header">
+                <div class="header-title">LTV:CAC Build</div>
+                <div class="header-line"><div class="icon icon-finance"></div><span id="title-organic-finance">Organic PLG</span></div>
+                <div class="header-line"><div class="icon icon-marketing"></div><span id="title-organic-marketing">Grader, Website Improver</span></div>
+            </div>
+            <div class="table-wrapper"><table><thead><tr>
+                <th>Metric</th>
+                <th>Jan-25</th><th>Feb-25</th><th>Mar-25</th><th>Apr-25</th><th>May-25</th><th>Jun-25</th><th>Jul-25</th><th>Aug-25</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th>
+            </tr></thead><tbody>
+                <tr class="expandable-row" onclick="toggleExpand('organic-expense')"><td class="metric-label"><span class="expand-icon">▶</span> Total Expense</td><td>$96,263</td><td>$154,224</td><td>$94,385</td><td>$160,861</td><td>$197,320</td><td>$156,017</td><td>$236,671</td><td>$247,205</td><td>$279,430</td><td>$406,107</td><td>$442,392</td><td>$673,506</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-expense"><td class="metric-label detail-indent">Paid Ads (Finance)</td><td>$8,517</td><td>$9,738</td><td>$9,927</td><td>$14,137</td><td>$16,113</td><td>$21,928</td><td>$38,561</td><td>$65,703</td><td>$116,287</td><td>$185,434</td><td>$252,789</td><td>$387,327</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-expense"><td class="metric-label detail-indent">Contractors</td><td>$13,667</td><td>$22,730</td><td>$11,072</td><td>$31,093</td><td>$29,592</td><td>$25,790</td><td>$14,371</td><td>$19,675</td><td>$11,560</td><td>$70,323</td><td>$33,332</td><td>$46,749</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-expense"><td class="metric-label detail-indent">Payroll-Related</td><td>$65,512</td><td>$109,554</td><td>$64,907</td><td>$101,864</td><td>$130,249</td><td>$96,746</td><td>$163,418</td><td>$138,739</td><td>$138,512</td><td>$137,931</td><td>$139,931</td><td>$220,110</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-expense"><td class="metric-label detail-indent">Overheads</td><td>$8,567</td><td>$12,202</td><td>$8,478</td><td>$13,768</td><td>$21,367</td><td>$11,553</td><td>$20,322</td><td>$23,088</td><td>$13,072</td><td>$12,418</td><td>$16,340</td><td>$19,320</td></tr>
+                <tr><td class="metric-label">CW</td><td>22</td><td>37</td><td>22</td><td>39</td><td>47</td><td>36</td><td>59</td><td>45</td><td>44</td><td>52</td><td>44</td><td>88</td></tr>
+                <tr><td class="metric-label">Activations</td><td>22</td><td>35</td><td>20</td><td>36</td><td>46</td><td>33</td><td>57</td><td>42</td><td>42</td><td>48</td><td>42</td><td>83</td></tr>
+                <tr class="highlight-row expandable-row" onclick="toggleExpand('organic-unitcac')"><td class="metric-total"><span class="expand-icon">▶</span> CAC</td><td>$4,418</td><td>$4,432</td><td>$4,712</td><td>$4,530</td><td>$4,326</td><td>$4,760</td><td>$4,134</td><td>$5,904</td><td>$6,612</td><td>$8,394</td><td>$10,579</td><td>$8,138</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-unitcac"><td class="metric-label detail-indent">Paid Ads</td><td>$387</td><td>$278</td><td>$496</td><td>$393</td><td>$350</td><td>$664</td><td>$677</td><td>$1,564</td><td>$2,769</td><td>$3,863</td><td>$6,019</td><td>$4,666</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-unitcac"><td class="metric-label detail-indent">Contractors</td><td>$621</td><td>$649</td><td>$554</td><td>$864</td><td>$643</td><td>$781</td><td>$252</td><td>$468</td><td>$275</td><td>$1,465</td><td>$794</td><td>$563</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-unitcac"><td class="metric-label detail-indent">Payroll-Related</td><td>$2,978</td><td>$3,130</td><td>$3,245</td><td>$2,830</td><td>$2,832</td><td>$2,932</td><td>$2,867</td><td>$3,303</td><td>$3,298</td><td>$2,874</td><td>$3,332</td><td>$2,652</td></tr>
+                <tr class="detail-row hidden" data-parent="organic-unitcac"><td class="metric-label detail-indent">Overheads</td><td>$389</td><td>$349</td><td>$424</td><td>$382</td><td>$465</td><td>$350</td><td>$357</td><td>$550</td><td>$311</td><td>$259</td><td>$389</td><td>$233</td></tr>
+                <tr><td class="metric-label">ARPA</td><td>$549</td><td>$545</td><td>$588</td><td>$661</td><td>$641</td><td>$644</td><td>$625</td><td>$638</td><td>$659</td><td>$679</td><td>$682</td><td>$689</td></tr>
+                <tr><td class="metric-label">Gross Margin</td><td>47%</td><td>49%</td><td>54%</td><td>49%</td><td>52%</td><td>52%</td><td>55%</td><td>58%</td><td>57%</td><td>63%</td><td>59%</td><td>—</td></tr>
+                <tr><td class="metric-label">Monthly Retention</td><td>97%</td><td>96%</td><td>97%</td><td>96%</td><td>97%</td><td>99%</td><td>96%</td><td>94%</td><td>94%</td><td>97%</td><td>98%</td><td>97%</td></tr>
+                <tr><td class="metric-label">Retention (Annualized)</td><td>69%</td><td>62%</td><td>71%</td><td>58%</td><td>69%</td><td>88%</td><td>58%</td><td>50%</td><td>46%</td><td>68%</td><td>82%</td><td>68%</td></tr>
+                <tr class="highlight-row"><td class="metric-total">LTV</td><td>$6,494</td><td>$10,208</td><td>$7,836</td><td>$10,098</td><td>$29,149</td><td>$7,078</td><td>$6,257</td><td>$6,063</td><td>$12,191</td><td>$26,655</td><td>$12,680</td><td>—</td></tr>
+                <tr class="highlight-row"><td class="metric-total">LTV:CAC Ratio</td><td>1.5x</td><td>2.3x</td><td>1.7x</td><td>2.2x</td><td>6.7x</td><td>1.5x</td><td>1.5x</td><td>1.0x</td><td>1.8x</td><td>3.2x</td><td>1.2x</td><td>—</td></tr>
+            </tbody></table></div>
+        </div>
+
+        <!-- ==================== MODEL TAB ==================== -->
+        <div class="section hidden" id="model-section">
+            <div class="section-header">
+                <div class="header-title">Sales-Purchase Hurdle Model</div>
+                <div class="header-line"><div class="icon icon-finance"></div><span>Calculate CPAQL to achieve LTV:CAC target in <strong>Sales-Purchase</strong> model</span></div>
+            </div>
+            <div class="model-container">
+                <div class="model-grid">
+                    <!-- Inputs Column -->
+                    <div class="model-column">
+                        <h3 class="model-section-title">Model Inputs</h3>
+                        
+                        <div class="input-group target-input">
+                            <label for="ltv-cac-target">LTV:CAC Target</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="ltv-cac-target" value="3.0" step="0.1" min="0.1" onchange="calculateModel()">
+                                <span class="input-suffix">x</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="input-arpa">ARPA (Monthly)</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="input-arpa" value="653" step="10" min="0" onchange="calculateModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $653</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="input-gross-margin">Gross Margin</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="input-gross-margin" value="57" step="1" min="0" max="100" onchange="calculateModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 57%</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="input-retention">Retention (Annualized)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="input-retention" value="61" step="1" min="0" max="100" onchange="calculateModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 61%</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="input-payroll-cac">Payroll-Related CAC</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="input-payroll-cac" value="2352" step="100" min="0" onchange="calculateModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $2,352</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="input-other-cac">Other CAC (Contractors + Overhead)</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="input-other-cac" value="630" step="50" min="0" onchange="calculateModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $630</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="input-conv-grader">AQL:CW Conversion - Grader</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="input-conv-grader" value="6.0" step="0.1" min="0.1" max="100" onchange="calculateModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 6.0%</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="input-conv-wi">AQL:CW Conversion - Website Improver</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="input-conv-wi" value="11.5" step="0.1" min="0.1" max="100" onchange="calculateModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 11.5%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Outputs Column -->
+                    <div class="model-column">
+                        <h3 class="model-section-title">Model Outputs</h3>
+                        
+                        <div class="output-card primary">
+                            <div class="output-label">Target CAC</div>
+                            <div class="output-value" id="output-target-cac">$4,333</div>
+                            <div class="output-formula">LTV ÷ LTV:CAC Target</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Monthly Retention</div>
+                            <div class="output-value" id="output-monthly-retention">96.0%</div>
+                            <div class="output-formula">Annualized Retention ^ (1/12)</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">LTV</div>
+                            <div class="output-value" id="output-ltv">$13,000</div>
+                            <div class="output-formula">ARPA × Gross Margin ÷ (1 − Monthly Retention)</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Available Paid Ads CAC</div>
+                            <div class="output-value" id="output-paid-ads-cac">$1,133</div>
+                            <div class="output-formula">Target CAC − Payroll CAC − Other CAC</div>
+                        </div>
+                        
+                        <div class="output-divider"></div>
+                        
+                        <div class="output-card highlight-grader">
+                            <div class="output-label">Required CPAQL - Grader</div>
+                            <div class="output-value large" id="output-cpaql-grader">$68</div>
+                            <div class="output-formula">Paid Ads CAC × AQL:CW Conversion</div>
+                        </div>
+                        
+                        <div class="output-card highlight-wi">
+                            <div class="output-label">Required CPAQL - Website Improver</div>
+                            <div class="output-value large" id="output-cpaql-wi">$130</div>
+                            <div class="output-formula">Paid Ads CAC × AQL:CW Conversion</div>
+                        </div>
+                        
+                        <div class="output-divider"></div>
+                        
+                        <div class="comparison-section">
+                            <h4>vs. Current Forecast (Dec-25)</h4>
+                            <div class="comparison-row">
+                                <span>Grader CPAQL:</span>
+                                <span class="comparison-current">$346</span>
+                                <span class="comparison-arrow">→</span>
+                                <span class="comparison-target" id="compare-grader">$68</span>
+                                <span class="comparison-delta negative" id="compare-grader-delta">-80%</span>
+                            </div>
+                            <div class="comparison-row">
+                                <span>WI CPAQL:</span>
+                                <span class="comparison-current">$480</span>
+                                <span class="comparison-arrow">→</span>
+                                <span class="comparison-target" id="compare-wi">$130</span>
+                                <span class="comparison-delta negative" id="compare-wi-delta">-73%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== DQ MONETIZATION TAB ==================== -->
+        <div class="section hidden" id="dq-section">
+            <div class="section-header">
+                <div class="header-title">DQ Monetization Model</div>
+                <div class="header-line"><div class="icon icon-finance"></div><span>Calculate monetization per DQ to achieve LTV:CAC target in <strong>Self-Purchase</strong> model</span></div>
+            </div>
+            <div class="model-container">
+                <div class="model-grid">
+                    <!-- Inputs Column -->
+                    <div class="model-column">
+                        <h3 class="model-section-title">Model Inputs</h3>
+                        
+                        <div class="input-group target-input">
+                            <label for="dq-ltv-cac-target">LTV:CAC Target</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-ltv-cac-target" value="3.0" step="0.1" min="0.1" onchange="calculateDQModel()">
+                                <span class="input-suffix">x</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-input-cac">Current CAC</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-input-cac" value="6232" step="100" min="0" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $6,232</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-input-ltv">Current LTV</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-input-ltv" value="8479" step="100" min="0" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $8,479</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-input-gross-margin">Gross Margin</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-input-gross-margin" value="57" step="1" min="0" max="100" onchange="calculateDQModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 57%</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-input-retention">Retention (Annualized)</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-input-retention" value="61" step="1" min="0" max="100" onchange="calculateDQModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 61%</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="dq-grader-spend">Monthly Grader Spend</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-grader-spend" value="485000" step="10000" min="0" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $485,293</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-wi-spend">Monthly Website Improver Spend</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-wi-spend" value="213000" step="10000" min="0" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $213,000</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="dq-grader-cpl">Grader Cost per Lead</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-grader-cpl" value="93" step="1" min="1" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $93</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-wi-cpl">Website Improver Cost per Lead</label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="dq-wi-cpl" value="270" step="1" min="1" onchange="calculateDQModel()">
+                            </div>
+                            <div class="input-ref">Dec'25: $270</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="dq-grader-dq-rate">Grader DQ Rate</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-grader-dq-rate" value="73" step="1" min="0" max="100" onchange="calculateDQModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 73%</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="dq-wi-dq-rate">Website Improver DQ Rate</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-wi-dq-rate" value="60" step="1" min="0" max="100" onchange="calculateDQModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Dec'25: 60%</div>
+                        </div>
+                        
+                        <div class="input-divider"></div>
+                        
+                        <div class="input-group">
+                            <label for="dq-conversion-rate">DQ to Customer Conversion Rate</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="dq-conversion-rate" value="5" step="0.5" min="0.1" max="100" onchange="calculateDQModel()">
+                                <span class="input-suffix">%</span>
+                            </div>
+                            <div class="input-ref">Assumption</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Outputs Column -->
+                    <div class="model-column">
+                        <h3 class="model-section-title">Model Outputs</h3>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Grader Leads</div>
+                            <div class="output-value" id="dq-output-grader-leads">5,215</div>
+                            <div class="output-formula">Grader Spend ÷ Cost per Lead</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">WI Leads</div>
+                            <div class="output-value" id="dq-output-wi-leads">789</div>
+                            <div class="output-formula">WI Spend ÷ Cost per Lead</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Grader DQs</div>
+                            <div class="output-value" id="dq-output-grader-dqs">3,807</div>
+                            <div class="output-formula">Grader Leads × DQ Rate</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">WI DQs</div>
+                            <div class="output-value" id="dq-output-wi-dqs">473</div>
+                            <div class="output-formula">WI Leads × DQ Rate</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Total DQs</div>
+                            <div class="output-value" id="dq-output-total-dqs">4,280</div>
+                            <div class="output-formula">Grader DQs + WI DQs</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">DQ Customers</div>
+                            <div class="output-value" id="dq-output-customers">214</div>
+                            <div class="output-formula">Total DQs × Conversion Rate</div>
+                        </div>
+                        
+                        <div class="output-divider"></div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">Current LTV:CAC</div>
+                            <div class="output-value" id="dq-output-current-ratio">1.4x</div>
+                            <div class="output-formula">Current LTV ÷ Current CAC</div>
+                        </div>
+                        
+                        <div class="output-card primary">
+                            <div class="output-label">Required LTV</div>
+                            <div class="output-value" id="dq-output-required-ltv">$18,696</div>
+                            <div class="output-formula">Current CAC × LTV:CAC Target</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">LTV Gap (per Customer)</div>
+                            <div class="output-value" id="dq-output-ltv-gap">$10,217</div>
+                            <div class="output-formula">Required LTV − Current LTV</div>
+                        </div>
+                        
+                        <div class="output-card">
+                            <div class="output-label">DQs per Customer</div>
+                            <div class="output-value" id="dq-output-dqs-per-customer">20</div>
+                            <div class="output-formula">1 ÷ Conversion Rate</div>
+                        </div>
+                        
+                        <div class="output-divider"></div>
+                        
+                        <div class="output-card highlight-grader" style="border-color: #059669; background: #D1FAE5;">
+                            <div class="output-label">Required LTV per DQ Customer</div>
+                            <div class="output-value large" id="dq-output-ltv-per-customer">$10,217</div>
+                            <div class="output-formula">LTV Gap (same as above)</div>
+                        </div>
+                        
+                        <div class="output-card highlight-grader" style="border-color: #059669; background: #D1FAE5;">
+                            <div class="output-label">Required Monthly Revenue per DQ Customer</div>
+                            <div class="output-value large" id="dq-output-monthly-rev">$671</div>
+                            <div class="output-formula">LTV Gap × (1 − Monthly Retention) ÷ Gross Margin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p style="margin-bottom: 8px;"><strong>Data Sources:</strong></p>
+            <p>• Finance Metrics: LTV Summary, CAC Summary, Unit CAC Summary</p>
+            <p>• Marketing Metrics: AQL Forecasting model</p>
+            <p style="margin-top: 16px;">© 2026 Owner.com — PLG LTV:CAC Summary Dashboard</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+            if (id === 'egpv-3k') {
+                applyEgpvFilter();
+            } else {
+                updateVisibility();
+            }
+        }
+        
+        function switchTab(tab) {
+            const modelSection = document.getElementById('model-section');
+            const dqSection = document.getElementById('dq-section');
+            const financeToggles = document.getElementById('finance-toggles');
+            const marketingToggles = document.getElementById('marketing-toggles');
+            const buildRadio = document.getElementById('tab-build');
+            const modelRadio = document.getElementById('tab-model');
+            const dqRadio = document.getElementById('tab-dq');
+            
+            document.querySelectorAll('.toggle-option').forEach(opt => {
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) opt.classList.toggle('active', radio.id === 'tab-' + tab);
+            });
+            
+            if (tab === 'build') {
+                modelSection.classList.add('hidden');
+                dqSection.classList.add('hidden');
+                financeToggles.style.display = 'flex';
+                marketingToggles.style.display = 'flex';
+                document.getElementById('egpv-toggles').style.display = 'flex';
+                buildRadio.checked = true;
+                updatePLGSections();
+            } else if (tab === 'model') {
+                document.querySelectorAll('[data-plg]').forEach(el => el.classList.add('hidden'));
+                modelSection.classList.remove('hidden');
+                dqSection.classList.add('hidden');
+                financeToggles.style.display = 'none';
+                marketingToggles.style.display = 'none';
+                document.getElementById('egpv-toggles').style.display = 'none';
+                modelRadio.checked = true;
+                calculateModel();
+            } else if (tab === 'dq') {
+                document.querySelectorAll('[data-plg]').forEach(el => el.classList.add('hidden'));
+                modelSection.classList.add('hidden');
+                dqSection.classList.remove('hidden');
+                financeToggles.style.display = 'none';
+                marketingToggles.style.display = 'none';
+                document.getElementById('egpv-toggles').style.display = 'none';
+                dqRadio.checked = true;
+                calculateDQModel();
+            }
+        }
+        
+        function updatePLGSections() {
+            const plgPaid = document.getElementById('plg-paid').checked;
+            const plgOrganic = document.getElementById('plg-organic').checked;
+            const plgCombined = document.getElementById('plg-combined').checked;
+            
+            document.querySelectorAll('[data-plg="paid"]').forEach(el => el.classList.toggle('hidden', !plgPaid));
+            document.querySelectorAll('[data-plg="organic"]').forEach(el => el.classList.toggle('hidden', !plgOrganic));
+            document.querySelectorAll('[data-plg="combined"]').forEach(el => el.classList.toggle('hidden', !plgCombined));
+        }
+        
+        function updateTitles() {
+            const productGrader = document.getElementById('product-grader').checked;
+            const productWI = document.getElementById('product-wi').checked;
+            const productCombined = document.getElementById('product-combined').checked;
+            
+            let marketingParts = [];
+            if (productGrader) marketingParts.push('Grader');
+            if (productWI) marketingParts.push('Website Improver');
+            if (productCombined) marketingParts.push('Grader + WI');
+            const marketingStr = marketingParts.length > 0 ? marketingParts.join(', ') : 'None selected';
+            
+            if (document.getElementById('title-combined-marketing')) {
+                document.getElementById('title-combined-marketing').textContent = marketingStr;
+            }
+            if (document.getElementById('title-paid-marketing')) {
+                document.getElementById('title-paid-marketing').textContent = marketingStr;
+            }
+            if (document.getElementById('title-organic-marketing')) {
+                document.getElementById('title-organic-marketing').textContent = marketingStr;
+            }
+        }
+        
+        function updateVisibility() {
+            const productGrader = document.getElementById('product-grader').checked;
+            const productWI = document.getElementById('product-wi').checked;
+            const productCombined = document.getElementById('product-combined').checked;
+            
+            document.querySelectorAll('.toggle-option').forEach(option => {
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                if (checkbox) option.classList.toggle('active', checkbox.checked);
+            });
+            
+            document.querySelectorAll('.marketing-product-row').forEach(el => {
+                const product = el.getAttribute('data-product');
+                const hasParent = el.hasAttribute('data-parent');
+                const parentId = el.getAttribute('data-parent');
+                
+                if (hasParent) {
+                    const parentRow = document.querySelector(`[onclick*="toggleExpand('${parentId}')"]`);
+                    const expandIcon = parentRow ? parentRow.querySelector('.expand-icon') : null;
+                    const isParentExpanded = expandIcon && expandIcon.classList.contains('expanded');
+                    
+                    if (!isParentExpanded) return;
+                    
+                    if (product === 'grader') {
+                        el.classList.toggle('hidden', !productGrader);
+                        if (!productGrader) {
+                            document.querySelectorAll(`[data-parent="combined-mktspend-grader"]`).forEach(child => {
+                                child.classList.add('hidden');
+                            });
+                            const graderExpandIcon = el.querySelector('.expand-icon');
+                            if (graderExpandIcon) graderExpandIcon.classList.remove('expanded');
+                        }
+                    } else if (product === 'wi') {
+                        el.classList.toggle('hidden', !productWI);
+                        if (!productWI) {
+                            document.querySelectorAll(`[data-parent="combined-mktspend-wi"]`).forEach(child => {
+                                child.classList.add('hidden');
+                            });
+                            const wiExpandIcon = el.querySelector('.expand-icon');
+                            if (wiExpandIcon) wiExpandIcon.classList.remove('expanded');
+                        }
+                    } else if (product === 'product-combined') {
+                        el.classList.toggle('hidden', !productCombined);
+                    }
+                    return;
+                }
+                
+                if (product === 'grader') {
+                    el.classList.toggle('hidden', !productGrader);
+                } else if (product === 'wi') {
+                    el.classList.toggle('hidden', !productWI);
+                } else if (product === 'product-combined') {
+                    el.classList.toggle('hidden', !productCombined);
+                }
+            });
+            
+            updatePLGSections();
+            updateTitles();
+        }
+        
+        function calculateModel() {
+            const ltvCacTarget = parseFloat(document.getElementById('ltv-cac-target').value) || 3.0;
+            const arpa = parseFloat(document.getElementById('input-arpa').value) || 653;
+            const grossMargin = (parseFloat(document.getElementById('input-gross-margin').value) || 57) / 100;
+            const retentionAnnualized = (parseFloat(document.getElementById('input-retention').value) || 61) / 100;
+            const payrollCac = parseFloat(document.getElementById('input-payroll-cac').value) || 2352;
+            const otherCac = parseFloat(document.getElementById('input-other-cac').value) || 630;
+            const convGrader = (parseFloat(document.getElementById('input-conv-grader').value) || 6.0) / 100;
+            const convWI = (parseFloat(document.getElementById('input-conv-wi').value) || 11.5) / 100;
+            
+            const monthlyRetention = Math.pow(retentionAnnualized, 1/12);
+            const ltv = (arpa * grossMargin) / (1 - monthlyRetention);
+            const targetCac = ltv / ltvCacTarget;
+            const paidAdsCac = Math.max(0, targetCac - payrollCac - otherCac);
+            const cpaqlGrader = paidAdsCac * convGrader;
+            const cpaqlWI = paidAdsCac * convWI;
+            
+            const currentGrader = 346;
+            const currentWI = 480;
+            const deltaGrader = ((cpaqlGrader - currentGrader) / currentGrader) * 100;
+            const deltaWI = ((cpaqlWI - currentWI) / currentWI) * 100;
+            
+            document.getElementById('output-monthly-retention').textContent = (monthlyRetention * 100).toFixed(1) + '%';
+            document.getElementById('output-ltv').textContent = '$' + Math.round(ltv).toLocaleString();
+            document.getElementById('output-target-cac').textContent = '$' + Math.round(targetCac).toLocaleString();
+            document.getElementById('output-paid-ads-cac').textContent = '$' + Math.round(paidAdsCac).toLocaleString();
+            document.getElementById('output-cpaql-grader').textContent = '$' + Math.round(cpaqlGrader).toLocaleString();
+            document.getElementById('output-cpaql-wi').textContent = '$' + Math.round(cpaqlWI).toLocaleString();
+            
+            document.getElementById('compare-grader').textContent = '$' + Math.round(cpaqlGrader).toLocaleString();
+            document.getElementById('compare-wi').textContent = '$' + Math.round(cpaqlWI).toLocaleString();
+            
+            const graderDeltaEl = document.getElementById('compare-grader-delta');
+            const wiDeltaEl = document.getElementById('compare-wi-delta');
+            
+            graderDeltaEl.textContent = (deltaGrader >= 0 ? '+' : '') + Math.round(deltaGrader) + '%';
+            graderDeltaEl.className = 'comparison-delta ' + (deltaGrader <= 0 ? 'positive' : 'negative');
+            
+            wiDeltaEl.textContent = (deltaWI >= 0 ? '+' : '') + Math.round(deltaWI) + '%';
+            wiDeltaEl.className = 'comparison-delta ' + (deltaWI <= 0 ? 'positive' : 'negative');
+        }
+        
+        function calculateDQModel() {
+            const ltvCacTarget = parseFloat(document.getElementById('dq-ltv-cac-target').value) || 3.0;
+            const currentCac = parseFloat(document.getElementById('dq-input-cac').value) || 6232;
+            const currentLtv = parseFloat(document.getElementById('dq-input-ltv').value) || 8479;
+            const grossMargin = (parseFloat(document.getElementById('dq-input-gross-margin').value) || 57) / 100;
+            const retentionAnnualized = (parseFloat(document.getElementById('dq-input-retention').value) || 61) / 100;
+            
+            const graderSpend = parseFloat(document.getElementById('dq-grader-spend').value) || 485000;
+            const wiSpend = parseFloat(document.getElementById('dq-wi-spend').value) || 213000;
+            const graderCPL = parseFloat(document.getElementById('dq-grader-cpl').value) || 93;
+            const wiCPL = parseFloat(document.getElementById('dq-wi-cpl').value) || 270;
+            const graderDQRate = (parseFloat(document.getElementById('dq-grader-dq-rate').value) || 73) / 100;
+            const wiDQRate = (parseFloat(document.getElementById('dq-wi-dq-rate').value) || 60) / 100;
+            const dqConversionRate = (parseFloat(document.getElementById('dq-conversion-rate').value) || 5) / 100;
+            
+            const graderLeads = graderSpend / graderCPL;
+            const wiLeads = wiSpend / wiCPL;
+            const graderDQs = graderLeads * graderDQRate;
+            const wiDQs = wiLeads * wiDQRate;
+            const totalDQs = graderDQs + wiDQs;
+            const customers = totalDQs * dqConversionRate;
+            const currentRatio = currentLtv / currentCac;
+            const requiredLtv = currentCac * ltvCacTarget;
+            const ltvGap = requiredLtv - currentLtv;
+            const dqsPerCustomer = 1 / dqConversionRate;
+            const ltvPerDQCustomer = ltvGap;
+            const monthlyRetention = Math.pow(retentionAnnualized, 1/12);
+            const monthlyRevPerCustomer = (ltvGap * (1 - monthlyRetention)) / grossMargin;
+            
+            document.getElementById('dq-output-grader-leads').textContent = Math.round(graderLeads).toLocaleString();
+            document.getElementById('dq-output-wi-leads').textContent = Math.round(wiLeads).toLocaleString();
+            document.getElementById('dq-output-grader-dqs').textContent = Math.round(graderDQs).toLocaleString();
+            document.getElementById('dq-output-wi-dqs').textContent = Math.round(wiDQs).toLocaleString();
+            document.getElementById('dq-output-total-dqs').textContent = Math.round(totalDQs).toLocaleString();
+            document.getElementById('dq-output-customers').textContent = Math.round(customers).toLocaleString();
+            document.getElementById('dq-output-current-ratio').textContent = currentRatio.toFixed(1) + 'x';
+            document.getElementById('dq-output-required-ltv').textContent = '$' + Math.round(requiredLtv).toLocaleString();
+            document.getElementById('dq-output-ltv-gap').textContent = '$' + Math.round(ltvGap).toLocaleString();
+            document.getElementById('dq-output-dqs-per-customer').textContent = Math.round(dqsPerCustomer).toLocaleString();
+            document.getElementById('dq-output-ltv-per-customer').textContent = '$' + Math.round(ltvPerDQCustomer).toLocaleString();
+            document.getElementById('dq-output-monthly-rev').textContent = '$' + Math.round(monthlyRevPerCustomer).toLocaleString();
+        }
+        
+        function toggleExpand(parentId) {
+            const rows = document.querySelectorAll(`[data-parent="${parentId}"]`);
+            const clickedRow = event.currentTarget;
+            const expandIcon = clickedRow.querySelector('.expand-icon');
+            const isExpanded = rows.length > 0 && !rows[0].classList.contains('hidden');
+            
+            const productGrader = document.getElementById('product-grader').checked;
+            const productWI = document.getElementById('product-wi').checked;
+            const productCombined = document.getElementById('product-combined').checked;
+            
+            rows.forEach(row => {
+                if (row.classList.contains('marketing-product-row')) {
+                    const product = row.getAttribute('data-product');
+                    
+                    if (isExpanded) {
+                        row.classList.add('hidden');
+                        const childParentId = row.querySelector('[onclick*="toggleExpand"]');
+                        if (childParentId) {
+                            const match = childParentId.getAttribute('onclick').match(/toggleExpand\('([^']+)'\)/);
+                            if (match) {
+                                document.querySelectorAll(`[data-parent="${match[1]}"]`).forEach(child => {
+                                    child.classList.add('hidden');
+                                });
+                                const childIcon = row.querySelector('.expand-icon');
+                                if (childIcon) childIcon.classList.remove('expanded');
+                            }
+                        }
+                    } else {
+                        if ((product === 'grader' && productGrader) ||
+                            (product === 'wi' && productWI) ||
+                            (product === 'product-combined' && productCombined)) {
+                            row.classList.remove('hidden');
+                        }
+                    }
+                } else {
+                    row.classList.toggle('hidden', isExpanded);
+                }
+            });
+            if (expandIcon) expandIcon.classList.toggle('expanded', !isExpanded);
+        }
+        
+        // ==================== eGPV ≥$3K FILTER ====================
+        const egpvMultipliers = {
+            // ARPA month-specific multipliers: index 0=Jan'25, ..., 11=Dec'25, 12=Jan'26
+            paid:     [0.90, 1.04, 1.06, 1.02, 1.01, 0.99, 1.01, 1.05, 1.01, 1.02, 1.05, 1.07, 1.05],
+            organic:  [1.00, 1.00, 0.95, 0.85, 0.89, 0.95, 0.99, 1.04, 1.02, 1.02, 1.04, 1.06, 1.02],
+            combined: [0.89, 1.14, 1.02, 0.95, 0.97, 0.97, 1.00, 1.04, 1.01, 1.02, 1.05, 1.07, 1.04]
+        };
+        
+        // ≥$3K Monthly Retention (1 - churn from Grand Total rows)
+        // index 0=Jan'25, ..., 11=Dec'25, 12=Jan'26
+        const egpvRetention = {
+            paid:     [1.000, 0.846, 1.000, 1.000, 1.000, 0.957, 0.976, 0.952, 0.961, 0.969, 0.980, 0.951, 0.968],
+            organic:  [1.000, 1.000, 1.000, 0.962, 0.975, 0.980, 0.969, 0.951, 0.968, 0.965, 0.994, 0.984, 0.986],
+            combined: [1.000, 0.875, 1.000, 0.985, 0.990, 0.965, 0.974, 0.952, 0.963, 0.968, 0.985, 0.962, 0.974]
+        };
+        
+        // Store original values on first load
+        let egpvOriginals = {};
+        
+        function getRowsByLabel(section, label) {
+            const rows = section.querySelectorAll('tbody tr');
+            for (const row of rows) {
+                const firstCell = row.querySelector('td:first-child');
+                if (!firstCell) continue;
+                const text = firstCell.textContent.trim();
+                if (text === label || text === '▶ ' + label || text.replace(/^▶\s*/, '') === label) return row;
+            }
+            return null;
+        }
+        
+        function parseValue(text) {
+            if (!text || text.trim() === '—') return null;
+            const cleaned = text.replace(/[$,%x]/g, '').replace(/,/g, '').trim();
+            return parseFloat(cleaned) || null;
+        }
+        
+        function storeOriginals() {
+            document.querySelectorAll('[data-plg]').forEach(section => {
+                const plgType = section.getAttribute('data-plg');
+                if (egpvOriginals[plgType]) return;
+                
+                egpvOriginals[plgType] = {};
+                ['ARPA', 'Monthly Retention', 'Retention (Annualized)', 'LTV', 'LTV:CAC Ratio'].forEach(label => {
+                    const row = getRowsByLabel(section, label);
+                    if (!row) return;
+                    const cells = Array.from(row.querySelectorAll('td')).slice(1);
+                    egpvOriginals[plgType][label] = cells.map(c => c.textContent.trim());
+                });
+            });
+        }
+        
+        function applyEgpvFilter() {
+            const isActive = document.getElementById('egpv-3k').checked;
+            const toggle = document.querySelector('.toggle-option.egpv-toggle');
+            toggle.classList.toggle('active', isActive);
+            
+            storeOriginals();
+            
+            document.querySelectorAll('[data-plg]').forEach(section => {
+                const plgType = section.getAttribute('data-plg');
+                const arpaMults = egpvMultipliers[plgType];
+                const retData = egpvRetention[plgType];
+                if (!arpaMults || !retData) return;
+                
+                const orig = egpvOriginals[plgType];
+                if (!orig) return;
+                
+                const arpaRow = getRowsByLabel(section, 'ARPA');
+                const gmRow = getRowsByLabel(section, 'Gross Margin');
+                const retRow = getRowsByLabel(section, 'Monthly Retention');
+                const annRetRow = getRowsByLabel(section, 'Retention (Annualized)');
+                const ltvRow = getRowsByLabel(section, 'LTV');
+                const ratioRow = getRowsByLabel(section, 'LTV:CAC Ratio');
+                const cacRow = getRowsByLabel(section, 'CAC');
+                
+                if (!arpaRow) return;
+                
+                const arpaCells = Array.from(arpaRow.querySelectorAll('td')).slice(1);
+                const gmCells = gmRow ? Array.from(gmRow.querySelectorAll('td')).slice(1) : [];
+                const retCells = retRow ? Array.from(retRow.querySelectorAll('td')).slice(1) : [];
+                const annRetCells = annRetRow ? Array.from(annRetRow.querySelectorAll('td')).slice(1) : [];
+                const ltvCells = ltvRow ? Array.from(ltvRow.querySelectorAll('td')).slice(1) : [];
+                const ratioCells = ratioRow ? Array.from(ratioRow.querySelectorAll('td')).slice(1) : [];
+                const cacCells = cacRow ? Array.from(cacRow.querySelectorAll('td')).slice(1) : [];
+                
+                for (let i = 0; i < arpaCells.length; i++) {
+                    const origArpaText = orig['ARPA'] ? orig['ARPA'][i] : null;
+                    const origRetText = orig['Monthly Retention'] ? orig['Monthly Retention'][i] : null;
+                    const origAnnRetText = orig['Retention (Annualized)'] ? orig['Retention (Annualized)'][i] : null;
+                    const origLtvText = orig['LTV'] ? orig['LTV'][i] : null;
+                    const origRatioText = orig['LTV:CAC Ratio'] ? orig['LTV:CAC Ratio'][i] : null;
+                    
+                    if (isActive) {
+                        // Apply ARPA multiplier
+                        const baseArpa = parseValue(origArpaText);
+                        if (!baseArpa) continue;
+                        const arpaMult = (i < arpaMults.length) ? arpaMults[i] : arpaMults[arpaMults.length - 1];
+                        const newArpa = Math.round(baseArpa * arpaMult);
+                        arpaCells[i].textContent = '$' + newArpa.toLocaleString();
+                        
+                        // Replace Monthly Retention with ≥$3K data
+                        const newMonthlyRet = (i < retData.length) ? retData[i] : null;
+                        if (newMonthlyRet !== null && retCells[i]) {
+                            const retPct = newMonthlyRet * 100;
+                            if (retPct === 100) {
+                                retCells[i].textContent = '100%';
+                            } else if (retPct === Math.round(retPct)) {
+                                retCells[i].textContent = Math.round(retPct) + '%';
+                            } else {
+                                retCells[i].textContent = retPct.toFixed(1) + '%';
+                            }
+                        }
+                        
+                        // Recalculate Annualized Retention = monthlyRet^12
+                        if (newMonthlyRet !== null && annRetCells[i]) {
+                            const annRet = Math.pow(newMonthlyRet, 12) * 100;
+                            if (annRet >= 99.5) {
+                                annRetCells[i].textContent = '100%';
+                            } else if (annRet === Math.round(annRet)) {
+                                annRetCells[i].textContent = Math.round(annRet) + '%';
+                            } else {
+                                annRetCells[i].textContent = annRet.toFixed(1) + '%';
+                            }
+                        }
+                        
+                        // Recalculate LTV = ARPA × GM / (1 - monthlyRet)
+                        const gm = gmCells[i] ? parseValue(gmCells[i].textContent) : null;
+                        const retForCalc = newMonthlyRet !== null ? newMonthlyRet : (origRetText ? parseValue(origRetText) / 100 : null);
+                        
+                        if (gm && retForCalc && retForCalc < 1 && ltvCells[i]) {
+                            const gmDecimal = gm / 100;
+                            const newLtv = Math.round(newArpa * gmDecimal / (1 - retForCalc));
+                            ltvCells[i].textContent = '$' + newLtv.toLocaleString();
+                            
+                            // Recalculate LTV:CAC
+                            const cac = cacCells.length > 0 && cacCells[i] ? parseValue(cacCells[i].textContent) : null;
+                            if (cac && ratioCells[i]) {
+                                ratioCells[i].textContent = (newLtv / cac).toFixed(1) + 'x';
+                            }
+                        } else if (retForCalc >= 1 && ltvCells[i]) {
+                            // 100% retention = infinite LTV, show as very large
+                            ltvCells[i].textContent = '∞';
+                            if (ratioCells[i]) ratioCells[i].textContent = '∞';
+                        }
+                    } else {
+                        // Restore all originals
+                        if (origArpaText) arpaCells[i].textContent = origArpaText;
+                        if (origRetText && retCells[i]) retCells[i].textContent = origRetText;
+                        if (origAnnRetText && annRetCells[i]) annRetCells[i].textContent = origAnnRetText;
+                        if (origLtvText && ltvCells[i]) ltvCells[i].textContent = origLtvText;
+                        if (origRatioText && ratioCells[i]) ratioCells[i].textContent = origRatioText;
+                    }
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateVisibility();
+            updateTitles();
+            calculateModel();
+            calculateDQModel();
+        });
+    </script>
+</body>
+</html>
