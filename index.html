@@ -702,17 +702,9 @@
                         </div>
                         
                         <div class="input-group">
-                            <label>Gross Margin</label>
+                            <label>DQ Monthly Retention</label>
                             <div class="input-wrapper">
-                                <input type="number" id="dq-val-gm" step="0.1" onchange="calculateDQModel()" style="font-size: 14px; font-weight: 600;">
-                                <span class="input-suffix">%</span>
-                            </div>
-                        </div>
-                        
-                        <div class="input-group">
-                            <label>Monthly Retention</label>
-                            <div class="input-wrapper">
-                                <input type="number" id="dq-val-ret" step="0.1" onchange="calculateDQModel()" style="font-size: 14px; font-weight: 600;">
+                                <input type="number" id="dq-val-ret" step="0.1" value="96" onchange="calculateDQModel()" style="font-size: 14px; font-weight: 600;">
                                 <span class="input-suffix">%</span>
                             </div>
                         </div>
@@ -796,7 +788,7 @@
                         <div class="output-card highlight-grader" style="border-color: #059669; background: #D1FAE5;">
                             <div class="output-label">Required Monthly Revenue per DQ Customer</div>
                             <div class="output-value large" id="dq-output-monthly-rev">—</div>
-                            <div class="output-formula">Required LTV per DQ × (1 − Monthly Retention) ÷ Gross Margin</div>
+                            <div class="output-formula">Required LTV per DQ × (1 − Monthly Retention) + $141 COGS</div>
                         </div>
                     </div>
                 </div>
@@ -1132,8 +1124,6 @@
             
             const cac = readL3MFromSection('CAC');
             const ltv = readL3MFromSection('LTV');
-            const gm = readL3MFromSection('Gross Margin');
-            const monthlyRet = readL3MFromSection('Monthly Retention');
             const dqRate = readL3MFromSection('DQ Rate - Grader + WI');
             const leads = readL3MFromSection('Leads - Grader + WI');
             const paidAds = readL3MFromSection('Paid Ads (Finance)');
@@ -1155,8 +1145,6 @@
             // Populate display values
             document.getElementById('dq-val-cac').value = cac ? Math.round(cac) : '';
             document.getElementById('dq-val-ltv').value = ltv ? Math.round(ltv) : '';
-            document.getElementById('dq-val-gm').value = gm ? gm.toFixed(1) : '';
-            document.getElementById('dq-val-ret').value = monthlyRet ? monthlyRet.toFixed(1) : '';
             document.getElementById('dq-val-spend').value = monthlySpend ? monthlySpend : '';
             document.getElementById('dq-val-leads').value = monthlyLeads ? monthlyLeads : '';
             document.getElementById('dq-val-dqrate').value = dqRate ? dqRate.toFixed(1) : '';
@@ -1166,7 +1154,6 @@
         function calculateDQModel() {
             const cac = parseFloat(document.getElementById('dq-val-cac').value) || 0;
             const ltv = parseFloat(document.getElementById('dq-val-ltv').value) || 0;
-            const gm = (parseFloat(document.getElementById('dq-val-gm').value) || 0) / 100;
             const monthlyRet = (parseFloat(document.getElementById('dq-val-ret').value) || 0) / 100;
             const dqRate = (parseFloat(document.getElementById('dq-val-dqrate').value) || 0) / 100;
             const monthlyLeads = parseFloat(document.getElementById('dq-val-leads').value) || 0;
@@ -1191,8 +1178,10 @@
             // Required LTV per DQ customer = (LTV Gap × monthly CW) / DQ customers
             const ltvPerDQ = dqCustomers > 0 ? (ltvGap * monthlyCW) / dqCustomers : 0;
             
-            // Monthly revenue = LTV per DQ × (1 - monthly retention) / gross margin
-            const monthlyRev = (gm && monthlyRet) ? (ltvPerDQ * (1 - monthlyRet)) / gm : 0;
+            // Monthly revenue = LTV per DQ × (1 - monthly retention) + DQ COGS
+            // Derived from: LTV = (ARPA - COGS) / (1 - ret), so ARPA = LTV × (1 - ret) + COGS
+            const dqCogs = 141;
+            const monthlyRev = monthlyRet ? (ltvPerDQ * (1 - monthlyRet)) + dqCogs : 0;
             
             document.getElementById('dq-output-total-leads').textContent = totalLeads.toLocaleString();
             document.getElementById('dq-output-total-dqs').textContent = totalDQs.toLocaleString();
